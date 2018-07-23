@@ -202,7 +202,10 @@ class Receiver(object):
 
 
 def get_timestr():
-    timestr = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    time_ = time.time()
+    ms = str(int((time_ % 1) * 1000)).zfill(3)
+    timestr = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time_))
+    timestr = "{}.{}".format(timestr, ms)
     return timestr
 
 
