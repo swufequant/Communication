@@ -47,7 +47,8 @@ class Receiver(object):
         with open(template_file, 'r', encoding='utf-8') as f:
             self.template = json.load(f)
         self.send_msg_num = [0] * len(self.files)
-        self.send_msg_num_max = 4
+        self.send_msg_num_max = 4               # 最多一次发送消息行数
+        self.send_msg_len_max = 100             # 最多一次发送消息字数
         self.is_test = is_test
 
     def translate_msg(self, text):
@@ -87,7 +88,7 @@ class Receiver(object):
     def translate_msgs(self, msg_contexts):
         '''
         将更新的字符串转化为字典
-        :param msg: ["600057,象屿股份,8.48,11:23:57,5_1\n]"]
+        :param msg: ["600057,象屿股份,8.48,11:23:57,5_1\n"]
         :return
             "openid": "openid",
             "first": "前面文字",
@@ -98,17 +99,21 @@ class Receiver(object):
         '''
         msg_dicts = list()
         change_dicts = list()
-
+        sum_len = 0
         for i, text in enumerate(msg_contexts):
             if len(text) > 0:
                 msg_dict = self.translate_msg(text)
                 if len(msg_dict) > 0:
                     msg_dicts.append(msg_dict)
-
+                    
+            sum_len += len(text)
+            
             if (len(msg_dicts) == self.send_msg_num_max) or \
-                    ((i + 1 == len(msg_contexts)) and len(msg_dicts) > 0):
+                sum_len >= self.send_msg_len_max or \
+               ((i + 1 == len(msg_contexts)) and len(msg_dicts) > 0):
                 change_dicts.append(self.get_change_dict(msg_dicts))
                 msg_dicts = list()
+                sum_len = 0
 
         return change_dicts
 
