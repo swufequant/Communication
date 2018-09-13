@@ -13,6 +13,11 @@ def get_models(is_test=False):
 
 
 def push_msg2models(models, file_msg_dict):
+    '''
+    :param models:
+    :param file_msg_dict: {name: context}
+    :return:
+    '''
     if len(file_msg_dict) == 0:
         return
 
@@ -22,10 +27,7 @@ def push_msg2models(models, file_msg_dict):
 
 if __name__ == '__main__':
     models = get_models()
-    with open(".\\tmp\\trade.log", 'r', encoding="utf-8") as f:
-        lines = f.readlines()
-
-    context = [line.replace("\n", "") for line in lines]
-    msgs = {"wechat_log": context}
+    context = ['测试消息1\n', '测试消息2\n']
+    msgs = {"Python_trade": context, "C++_cancel": context}
     push_msg2models(models, msgs)
 

@@ -100,7 +100,7 @@ class file_monitor(object):
         time.sleep(10)
 
     def monitor(self):
-        update_context = dict()
+        update_context = dict()                                             # {name: context}
         for name in self.file_list:
             updatetime = os.path.getmtime(self.file_list[name])
             if updatetime > self.file_updatetime[name]:

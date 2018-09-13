@@ -48,7 +48,7 @@ class Receiver(object):
             self.template = json.load(f)
         self.send_msg_num = [0] * len(self.files)
         self.send_msg_num_max = 4               # 最多一次发送消息行数
-        self.send_msg_len_max = 100             # 最多一次发送消息字数
+        self.send_msg_len_max = 70              # 最多一次发送消息字数
         self.is_test = is_test
 
     def translate_msg(self, text):
@@ -142,7 +142,7 @@ class Receiver(object):
             print(r.text)
         return r.text
 
-    def send_msg(self, msgs=list()):
+    def send_msg(self, msgs=list(), filename='blank'):
         '''
         发送消息
         :param msgs:  消息 每一行算一条消息
@@ -163,6 +163,7 @@ class Receiver(object):
             for receiver in self.receivers.values():
                 for msg_template in msg_templates:
                     msg_template["comm"]["openid"] = receiver
+                    msg_template["comm"]["keyword1"] = filename
                     byte_json = json.dumps(msg_template)
                     rev_list.append(self.push_msg(byte_json))
 
@@ -191,13 +192,8 @@ class Receiver(object):
                 # print("{} is not in the msgs".format(fn, self.files))
                 pass
             else:
-                rev_msg = rev_msg + msgs[fn]
-
-        msg_n = len(rev_msg)
-        if msg_n > 0:
-            self.send_msg(rev_msg)
-
-        return msg_n
+                if len(msgs[fn]) > 0:
+                    self.send_msg(msgs[fn], fn)
 
     def __setattr__(self, key, value):
         if key == "template__":
