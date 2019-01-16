@@ -3,7 +3,6 @@
 # !/usr/bin/env python3
 import json
 import os
-import pandas as pd
 import pickle as pkl
 from warnings import warn
 import time
